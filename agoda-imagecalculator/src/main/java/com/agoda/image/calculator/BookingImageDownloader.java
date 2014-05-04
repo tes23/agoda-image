@@ -35,7 +35,7 @@ public class BookingImageDownloader implements ImageDownloader {
             return  downloadImages(elements, destinationPath);
         } catch (IOException e) {
             LOGGER.debug("HTML document can not be reached");
-            throw new AgodaImageException(ErrorCode.UNABLE_TO_DOWNLOAD);
+            throw new AgodaImageException(ErrorCode.UNABLE_TO_DOWNLOAD, e);
         }
     }
 
@@ -69,6 +69,6 @@ public class BookingImageDownloader implements ImageDownloader {
     }
 
     private static String getFileName(String imageURL) {
-        return imageURL.substring(imageURL.lastIndexOf("/")+1);
+        return imageURL.substring(imageURL.lastIndexOf("/"));
     }
 }

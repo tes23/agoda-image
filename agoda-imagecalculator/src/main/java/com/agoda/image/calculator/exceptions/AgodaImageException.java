@@ -19,6 +19,11 @@ public class AgodaImageException extends Exception {
         this.errorCode = errorCode;
     }
 
+    public AgodaImageException(ErrorCode errorCode, Throwable cause) {
+        super(cause);
+        this.errorCode = errorCode;
+    }
+
     public ErrorCode getErrorCode() {
         return errorCode;
     }
