@@ -13,6 +13,10 @@ public class FileData {
     private String imageURL;
     private File file;
 
+    public FileData(String imageURL) {
+        this.imageURL = imageURL;
+    }
+
     public FileData(String imageURL, File file) {
         this.imageURL = imageURL;
         this.file = file;

@@ -14,5 +14,13 @@
     <artifactId>agoda-imagegui</artifactId>
     <version>1.0-SNAPSHOT</version>
 
+    <dependencies>
+        <dependency>
+            <groupId>agoda-image</groupId>
+            <artifactId>agoda-imagecalculator</artifactId>
+            <version>1.0-SNAPSHOT</version>
+        </dependency>
+    </dependencies>
+
     
 </project>

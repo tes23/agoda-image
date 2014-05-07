@@ -8,7 +8,8 @@ package com.agoda.image.calculator.exceptions;
  * To change this template use File | Settings | File Templates.
  */
 public enum ErrorCode {
-    UNABLE_TO_DOWNLOAD(10, "Unable to download")
+    UNABLE_TO_DOWNLOAD(10, "Unable to check/download"),
+    IO_PROBLEM(20, "Unable to read/write file from/to the file system")
     ;
 
     private int errorCode;
