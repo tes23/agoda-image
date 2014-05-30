@@ -19,10 +19,12 @@ public class ImageDialog extends JDialog {
     private JLabel urlLabel;
     private JList imagesJList;
     private JLabel foundImagesTextLabel;
+    private JButton downloadToButton;
 
     private ImageDownloader imageDownloader = new BookingImageDownloader();
     private ImageData imageData;
-    String usedURL;
+    private String usedURL;
+    private String downloadDirectory;
 
     public ImageDialog() {
         setContentPane(contentPane);
@@ -78,26 +80,44 @@ public class ImageDialog extends JDialog {
                 }
             }
         });
+        downloadToButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                final JFileChooser fc = new JFileChooser();
+                fc.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
+                int returnVal = fc.showOpenDialog(ImageDialog.this);
+                if (returnVal == JFileChooser.APPROVE_OPTION) {
+                    downloadDirectory = fc.getSelectedFile().getAbsolutePath();
+                }
+            }
+        });
     }
 
     private void onOK() {
         //TODO: refactor, pass list of FileDatas instead of initializing ImageManipulator continuously
-        if(imageData != null && imageData.getFileDatas() != null) {
-            for (FileData fileData : imageData.getFileDatas()) {
-                ImageManipulator manipulator = new ImageManipulator(fileData);
-                try {
+
+        if (imageData != null && imageData.getFileDatas() != null) {
+            try {
+                imageDownloader.downloadImages(imageData, "e:\\Temp\\images");
+                for (FileData fileData : imageData.getFileDatas()) {
+                    ImageManipulator manipulator = new ImageManipulator(fileData);
                     manipulator.resize();
-                } catch (AgodaImageException e) {
-                    showError(e.getErrorCode().getMessage());
-                    e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
                 }
+                showInfo("All pictures have been downloaded and resized.\nCheck the files with name containing \"_resized\".");
+            } catch (AgodaImageException e) {
+                showError(e.getErrorCode().getMessage());
+                e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
             }
         }
 
     }
 
     private void showError(String message) {
-        JOptionPane.showMessageDialog(null, message, "Error", JOptionPane.ERROR_MESSAGE);
+        JOptionPane.showMessageDialog(this, message, "Error", JOptionPane.ERROR_MESSAGE);
+    }
+
+    private void showInfo(String message) {
+        JOptionPane.showMessageDialog(this, message, "Info", JOptionPane.INFORMATION_MESSAGE);
     }
 
     private void onCancel() {

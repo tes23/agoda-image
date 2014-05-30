@@ -1,12 +1,14 @@
 package com.agoda.image.calculator.manipulator;
 
 import com.agoda.image.calculator.FileData;
+import com.agoda.image.calculator.constants.GlobalConstants;
 import com.agoda.image.calculator.exceptions.AgodaImageException;
 import com.agoda.image.calculator.exceptions.ErrorCode;
 import org.imgscalr.Scalr;
 
 import javax.imageio.ImageIO;
 import java.awt.image.BufferedImage;
+import java.io.File;
 import java.io.IOException;
 
 /**
@@ -41,7 +43,25 @@ public class ImageManipulator {
         ImageInfo info = ImageSizeBuilder.calculate(originalImage.getWidth(), originalImage.getHeight());
 
         BufferedImage resizedImage = Scalr.crop(originalImage, info.x, info.y, info.width, info.height);
-        ImageIO.write(resizedImage, "jpg", fileData.getFile());
+        ImageIO.write(resizedImage, "jpg", createResizedFile());
+    }
+
+    private File createResizedFile() {
+        String absolutePathFile = fileData.getFile().getAbsolutePath();
+        int lastSeparatorIndex = absolutePathFile.lastIndexOf(File.separator);
+        String absolutePath = absolutePathFile.substring(0, lastSeparatorIndex + 1);
+
+        return new File(absolutePath + createResizedFileName(absolutePathFile.substring(lastSeparatorIndex + 1)));
+    }
+
+    private String createResizedFileName(String originalFileName) {
+        int lastDotInFileName = originalFileName.lastIndexOf(".");
+        String fileName = originalFileName.substring(0, lastDotInFileName); //
+        return fileName.concat(GlobalConstants.RESIZED_FILENAME_POSTFIX) + originalFileName.substring(lastDotInFileName);
+    }
+
+    private String getFileName() {
+        return fileData.getFile().getName();
     }
 
     private static class ImageInfo {
