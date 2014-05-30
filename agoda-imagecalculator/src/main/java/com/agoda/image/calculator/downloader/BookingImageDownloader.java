@@ -4,7 +4,6 @@ import com.agoda.image.calculator.FileData;
 import com.agoda.image.calculator.ImageData;
 import com.agoda.image.calculator.constants.AttributeSelector;
 import com.agoda.image.calculator.constants.DOMSelector;
-import com.agoda.image.calculator.constants.GlobalConstants;
 import com.agoda.image.calculator.exceptions.AgodaImageException;
 import com.agoda.image.calculator.exceptions.ErrorCode;
 import org.jsoup.Connection;
@@ -12,8 +11,6 @@ import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import java.io.File;
 import java.io.FileOutputStream;
@@ -27,29 +24,43 @@ import java.io.IOException;
  * To change this template use File | Settings | File Templates.
  */
 public class BookingImageDownloader implements ImageDownloader {
-    private static final Logger LOGGER = LoggerFactory.getLogger(BookingImageDownloader.class);
+//    private static final Logger LOGGER = LoggerFactory.getLogger(BookingImageDownloader.class);
 
     @Override
     public ImageData connectAndGetAvailableImages(String url) throws AgodaImageException {
         try {
             Elements elements = getHTMLDocument(url);
 
-            return  getAvailableImages(elements);
+            return getAvailableImages(elements);
         } catch (IOException e) {
-            LOGGER.debug("HTML document can not be reached");
+//            LOGGER.debug("HTML document can not be reached");
             throw new AgodaImageException(ErrorCode.UNABLE_TO_DOWNLOAD, e);
         }
     }
 
     @Override
-    public ImageData connectAndDownload(String url, String destinationPath) throws AgodaImageException {
+    public ImageData connectAndDownloadImages(String url, String destinationPath) throws AgodaImageException {
         try {
             Elements elements = getHTMLDocument(url);
 
-            return  downloadImages(elements, destinationPath);
+            return downloadImages(elements, destinationPath);
         } catch (IOException e) {
-            LOGGER.debug("HTML document can not be reached");
+//            LOGGER.debug("HTML document can not be reached");
             throw new AgodaImageException(ErrorCode.UNABLE_TO_DOWNLOAD, e);
+        }
+    }
+
+    @Override
+    public void downloadImages(ImageData imageData, String destinationPath) throws AgodaImageException {
+        if (imageData != null && imageData.getFileDatas() != null) {
+            try {
+                for (FileData fileData : imageData.getFileDatas()) {
+                    FileData data = downloadImageByURL(fileData.getImageURL(), destinationPath);
+                    fileData.setFile(data.getFile());
+                }
+            } catch (IOException e) {
+                throw new AgodaImageException(ErrorCode.UNABLE_TO_DOWNLOAD, e);
+            }
         }
     }
 
@@ -60,7 +71,7 @@ public class BookingImageDownloader implements ImageDownloader {
 
     private static ImageData getAvailableImages(Elements elements) throws IOException {
         ImageData imageData = null;
-        if(elements != null) {
+        if (elements != null) {
             imageData = new ImageData();
             for (Element element : elements) {
                 imageData.addFileData(getImage(element));
@@ -71,7 +82,7 @@ public class BookingImageDownloader implements ImageDownloader {
 
     private static ImageData downloadImages(Elements elements, String destinationPath) throws IOException {
         ImageData imageData = null;
-        if(elements != null) {
+        if (elements != null) {
             imageData = new ImageData();
             for (Element element : elements) {
                 imageData.addFileData(downloadImage(element, destinationPath));
@@ -80,20 +91,20 @@ public class BookingImageDownloader implements ImageDownloader {
         return imageData;
     }
 
-    private static FileData getImage(Element element) {
-        return new FileData(getImageURL(element));
-    }
-
     private static FileData downloadImage(Element element, String destinationPath) throws IOException {
         final String imageURL = getImageURL(element);
+        return downloadImageByURL(imageURL, destinationPath);
+    }
+
+    private static FileData downloadImageByURL(String imageURL, String destinationPath) throws IOException {
         Connection.Response imageResponse = Jsoup.connect(imageURL).ignoreContentType(true).execute();
 
         File file = new File(destinationPath + getFileName(imageURL));
 
 //        if(GlobalConstants.IS_DOWNLOADABLE) {
-            FileOutputStream outputStream = new FileOutputStream(file);
-            outputStream.write(imageResponse.bodyAsBytes());
-            outputStream.close();
+        FileOutputStream outputStream = new FileOutputStream(file);
+        outputStream.write(imageResponse.bodyAsBytes());
+        outputStream.close();
 //        }
 
         return new FileData(imageURL, file);
@@ -103,6 +114,10 @@ public class BookingImageDownloader implements ImageDownloader {
         AttributeSelector selector = AttributeSelector.BOOKING_IMAGE_URL;
         String attr = element.attr(selector.getSelector());
         return attr.replaceAll(selector.getExpectedSubDir(), selector.getNewSubDir());
+    }
+
+    private static FileData getImage(Element element) {
+        return new FileData(getImageURL(element));
     }
 
     private static String getFileName(String imageURL) {

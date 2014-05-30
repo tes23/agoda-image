@@ -29,4 +29,12 @@ public class FileData {
     public File getFile() {
         return file;
     }
+
+    public void setImageURL(String imageURL) {
+        this.imageURL = imageURL;
+    }
+
+    public void setFile(File file) {
+        this.file = file;
+    }
 }

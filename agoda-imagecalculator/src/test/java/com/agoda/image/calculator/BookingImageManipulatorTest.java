@@ -25,7 +25,7 @@ public class BookingImageManipulatorTest {
     @Test
     public void testSelectDomELement() throws Exception {
         ImageDownloader downloader = new BookingImageDownloader();
-        ImageData imageData = downloader.connectAndDownload(BOOKING_SAMPLE_URL, "src/test/resources/images");
+        ImageData imageData = downloader.connectAndDownloadImages(BOOKING_SAMPLE_URL, "src/test/resources/images");
         assertNotNull(imageData);
 
         for (FileData fileData : imageData.getFileDatas()) {
@@ -36,7 +36,7 @@ public class BookingImageManipulatorTest {
     @Test
     public void testDownloadAndResize() throws Exception {
         ImageDownloader downloader = new BookingImageDownloader();
-        ImageData imageData = downloader.connectAndDownload(BOOKING_SAMPLE_URL, "src/test/resources/images");
+        ImageData imageData = downloader.connectAndDownloadImages(BOOKING_SAMPLE_URL, "src/test/resources/images/resized");
 
         for (FileData fileData : imageData.getFileDatas()) {
             ImageManipulator manipulator = new ImageManipulator(fileData);
@@ -78,5 +78,12 @@ public class BookingImageManipulatorTest {
         for (FileData fileData : fileDatas) {
             System.out.println(fileData.getImageURL());
         }
+    }
+
+    @Test
+    public void testPreferredAspectRatioImage() throws Exception {
+        FileData fileData = new FileData("27263909.jpg", new File("src\\test\\resources\\images\\resized\\27263909.jpg"));
+        ImageManipulator manipulator = new ImageManipulator(fileData);
+        manipulator.resize();
     }
 }

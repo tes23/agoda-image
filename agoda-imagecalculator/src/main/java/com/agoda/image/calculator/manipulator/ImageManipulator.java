@@ -54,21 +54,29 @@ public class ImageManipulator {
     public static class ImageSizeBuilder {
         public static ImageInfo calculate(int originalWidth, int originalHeight) {
             ImageInfo imageSize = new ImageInfo();
+
+
             boolean isLandscapeLayout = originalWidth > originalHeight;
             if(isLandscapeLayout) {
                 //for example: 1024 x 684
-                imageSize.width = Double.valueOf(1024d/768d*originalHeight).intValue();
+                imageSize.width = getPreferredSize(originalWidth, Double.valueOf(4d/3d*originalHeight).intValue());
                 imageSize.height = originalHeight;
-                imageSize.x = (originalWidth - imageSize.width) / 2;
+                int xCoord = (originalWidth - imageSize.width) / 2;
+                imageSize.x = xCoord > 0 ? xCoord : 0;
                 imageSize.y = 0;
             } else {
                 //for example: 633 x 768
                 imageSize.width = originalWidth;
-                imageSize.height = Double.valueOf(768d/1024d*originalWidth).intValue();
+                imageSize.height = getPreferredSize(originalHeight, Double.valueOf(3d/4d*originalWidth).intValue());
                 imageSize.x = 0;
-                imageSize.y = (originalHeight - imageSize.height) /2;
+                int yCoord = (originalHeight - imageSize.height) /2;
+                imageSize.y = yCoord > 0 ? yCoord : 0;
             }
             return imageSize;
+        }
+
+        private static int getPreferredSize(int originalSize, int newSize) {
+            return newSize > originalSize ? originalSize : newSize;
         }
     }
 }

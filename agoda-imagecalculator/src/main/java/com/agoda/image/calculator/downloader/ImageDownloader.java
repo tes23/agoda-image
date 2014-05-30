@@ -12,7 +12,22 @@ import com.agoda.image.calculator.exceptions.AgodaImageException;
  */
 public interface ImageDownloader {
 
+    /**
+     * Connect to the given page and retrieves the found images
+     * @param url
+     * @return
+     * @throws AgodaImageException
+     */
     ImageData connectAndGetAvailableImages(String url) throws AgodaImageException;
 
-    ImageData connectAndDownload(String url, String destinationPath) throws AgodaImageException;
+    /**
+     * Connectto the given page and download the found images
+     * @param url
+     * @param destinationPath
+     * @return
+     * @throws AgodaImageException
+     */
+    ImageData connectAndDownloadImages(String url, String destinationPath) throws AgodaImageException;
+
+    void downloadImages(ImageData imageData, String destinationPath) throws AgodaImageException;
 }
