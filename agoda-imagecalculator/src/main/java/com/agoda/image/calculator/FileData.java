@@ -13,6 +13,10 @@ public class FileData {
     private String imageURL;
     private File file;
 
+    public FileData(String imageURL) {
+        this.imageURL = imageURL;
+    }
+
     public FileData(String imageURL, File file) {
         this.imageURL = imageURL;
         this.file = file;
@@ -24,5 +28,13 @@ public class FileData {
 
     public File getFile() {
         return file;
+    }
+
+    public void setImageURL(String imageURL) {
+        this.imageURL = imageURL;
+    }
+
+    public void setFile(File file) {
+        this.file = file;
     }
 }

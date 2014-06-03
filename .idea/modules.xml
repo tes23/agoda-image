@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="ProjectModuleManager">
+    <modules>
+      <module fileurl="file://$PROJECT_DIR$/agoda-image.iml" filepath="$PROJECT_DIR$/agoda-image.iml" />
+      <module fileurl="file://$PROJECT_DIR$/agoda-imagecalculator/agoda-imagecalculator.iml" filepath="$PROJECT_DIR$/agoda-imagecalculator/agoda-imagecalculator.iml" />
+      <module fileurl="file://$PROJECT_DIR$/agoda-imagegui/agoda-imagegui.iml" filepath="$PROJECT_DIR$/agoda-imagegui/agoda-imagegui.iml" />
+    </modules>
+  </component>
+</project>
+
