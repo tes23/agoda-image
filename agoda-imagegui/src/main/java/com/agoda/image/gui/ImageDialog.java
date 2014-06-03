@@ -6,9 +6,12 @@ import com.agoda.image.calculator.ImageData;
 import com.agoda.image.calculator.downloader.ImageDownloader;
 import com.agoda.image.calculator.exceptions.AgodaImageException;
 import com.agoda.image.calculator.manipulator.ImageManipulator;
+import org.apache.commons.lang3.StringUtils;
 
 import javax.swing.*;
+import java.awt.*;
 import java.awt.event.*;
+import java.util.List;
 
 public class ImageDialog extends JDialog {
     private JPanel contentPane;
@@ -20,6 +23,7 @@ public class ImageDialog extends JDialog {
     private JList imagesJList;
     private JLabel foundImagesTextLabel;
     private JButton downloadToButton;
+    private JTextField downloadToTextField;
 
     private ImageDownloader imageDownloader = new BookingImageDownloader();
     private ImageData imageData;
@@ -29,7 +33,8 @@ public class ImageDialog extends JDialog {
     public ImageDialog() {
         setContentPane(contentPane);
         setModal(true);
-        getRootPane().setDefaultButton(resizeButton);
+        setTitle("Booking.com - Hotel Images Downloader");
+        getRootPane().setDefaultButton(closeButton);
 
         resizeButton.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
@@ -68,11 +73,15 @@ public class ImageDialog extends JDialog {
                         JOptionPane.showMessageDialog(null, "No Images found", "Warning", JOptionPane.WARNING_MESSAGE);
                     } else {
                         DefaultListModel listModel = new DefaultListModel();
-                        for (FileData fileData : imageData.getFileDatas()) {
+                        List<FileData> fileDatas = imageData.getFileDatas();
+                        listModel.addElement("=> Found images: " + fileDatas.size() + " pieces");
+
+                        for (FileData fileData : fileDatas) {
                             listModel.addElement(fileData.getImageURL());
                         }
                         imagesJList.setModel(listModel);
-                        resizeButton.setEnabled(true);
+
+                        enableResizeButtonByRelatedFields();
                     }
                 } catch (AgodaImageException e1) {
                     showError(e1.getErrorCode().getMessage());
@@ -88,9 +97,19 @@ public class ImageDialog extends JDialog {
                 int returnVal = fc.showOpenDialog(ImageDialog.this);
                 if (returnVal == JFileChooser.APPROVE_OPTION) {
                     downloadDirectory = fc.getSelectedFile().getAbsolutePath();
+                    downloadToTextField.setText(downloadDirectory);
+                    enableResizeButtonByRelatedFields();
                 }
             }
         });
+        downloadToTextField.addMouseListener(getMouseListenerForDownloadToTextField());
+    }
+
+    private static void setLocationToCenter(Window window) {
+        Dimension dimension = Toolkit.getDefaultToolkit().getScreenSize();
+        int x = (int) ((dimension.getWidth() - window.getWidth()) / 2);
+        int y = (int) ((dimension.getHeight() - window.getHeight()) / 2);
+        window.setLocation(x, y);
     }
 
     private void onOK() {
@@ -98,7 +117,7 @@ public class ImageDialog extends JDialog {
 
         if (imageData != null && imageData.getFileDatas() != null) {
             try {
-                imageDownloader.downloadImages(imageData, "e:\\Temp\\images");
+                imageDownloader.downloadImages(imageData, downloadDirectory);
                 for (FileData fileData : imageData.getFileDatas()) {
                     ImageManipulator manipulator = new ImageManipulator(fileData);
                     manipulator.resize();
@@ -120,6 +139,12 @@ public class ImageDialog extends JDialog {
         JOptionPane.showMessageDialog(this, message, "Info", JOptionPane.INFORMATION_MESSAGE);
     }
 
+    private void enableResizeButtonByRelatedFields() {
+        boolean enable = StringUtils.isNotEmpty(downloadDirectory) && StringUtils.isNotEmpty(urlTextField.getText()) &&
+                imageData != null && !imageData.getFileDatas().isEmpty();
+        resizeButton.setEnabled(enable);
+    }
+
     private void onCancel() {
 // add your code here if necessary
         dispose();
@@ -128,7 +153,37 @@ public class ImageDialog extends JDialog {
     public static void main(String[] args) {
         ImageDialog dialog = new ImageDialog();
         dialog.pack();
+        setLocationToCenter(dialog);
         dialog.setVisible(true);
         System.exit(0);
+    }
+
+    private MouseListener getMouseListenerForDownloadToTextField() {
+        return new MouseListener() {
+            @Override
+            public void mouseClicked(MouseEvent e) {
+                downloadToButton.doClick();
+            }
+
+            @Override
+            public void mousePressed(MouseEvent e) {
+                //To change body of implemented methods use File | Settings | File Templates.
+            }
+
+            @Override
+            public void mouseReleased(MouseEvent e) {
+                //To change body of implemented methods use File | Settings | File Templates.
+            }
+
+            @Override
+            public void mouseEntered(MouseEvent e) {
+                //To change body of implemented methods use File | Settings | File Templates.
+            }
+
+            @Override
+            public void mouseExited(MouseEvent e) {
+                //To change body of implemented methods use File | Settings | File Templates.
+            }
+        };
     }
 }

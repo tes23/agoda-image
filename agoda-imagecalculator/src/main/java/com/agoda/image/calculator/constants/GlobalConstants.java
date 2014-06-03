@@ -7,7 +7,7 @@ package com.agoda.image.calculator.constants;
  */
 public final class GlobalConstants {
     public static final boolean IS_DOWNLOADABLE = false;
-    public static final String RESIZED_FILENAME_POSTFIX = "_resized";
+    public static final String RESIZED_DIRECTORY_NAME = "resized";
 
     private GlobalConstants(){
     }

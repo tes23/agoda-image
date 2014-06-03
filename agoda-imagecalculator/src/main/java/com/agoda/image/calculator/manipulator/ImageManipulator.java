@@ -36,6 +36,12 @@ public class ImageManipulator {
 
     }
 
+    private static void createResizedDirectory(String absolutePath) {
+        File resizedDirectory = new File(absolutePath);
+        resizedDirectory.mkdir();
+
+    }
+
     private void resizeImage(BufferedImage originalImage) throws IOException {
 
 //        1024 -> x  (912)
@@ -49,15 +55,11 @@ public class ImageManipulator {
     private File createResizedFile() {
         String absolutePathFile = fileData.getFile().getAbsolutePath();
         int lastSeparatorIndex = absolutePathFile.lastIndexOf(File.separator);
-        String absolutePath = absolutePathFile.substring(0, lastSeparatorIndex + 1);
+        String absolutePath = absolutePathFile.substring(0, lastSeparatorIndex + 1) + GlobalConstants.RESIZED_DIRECTORY_NAME;
 
-        return new File(absolutePath + createResizedFileName(absolutePathFile.substring(lastSeparatorIndex + 1)));
-    }
+        createResizedDirectory(absolutePath);
 
-    private String createResizedFileName(String originalFileName) {
-        int lastDotInFileName = originalFileName.lastIndexOf(".");
-        String fileName = originalFileName.substring(0, lastDotInFileName); //
-        return fileName.concat(GlobalConstants.RESIZED_FILENAME_POSTFIX) + originalFileName.substring(lastDotInFileName);
+        return new File(absolutePath + File.separator + absolutePathFile.substring(lastSeparatorIndex + 1));
     }
 
     private String getFileName() {
