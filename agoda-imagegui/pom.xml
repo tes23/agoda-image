@@ -30,6 +30,20 @@
             <artifactId>commons-collections4</artifactId>
             <version>4.0</version>
         </dependency>
+
+        <dependency>
+            <groupId>com.intellij</groupId>
+            <artifactId>forms_rt</artifactId>
+            <version>5.0</version>
+        </dependency>
+
+        <!-- TESTS -->
+        <dependency>
+            <groupId>junit</groupId>
+            <artifactId>junit</artifactId>
+            <version>4.8.1</version>
+            <scope>test</scope>
+        </dependency>
 	</dependencies>
 
 	<build>
@@ -41,7 +55,6 @@
 					<source>1.6</source>
 					<target>1.6</target>
 					<encoding>UTF-8</encoding>
-                    <!--<source>/target/classes/com/intellij/</source>-->
 				</configuration>
 			</plugin>
 			<plugin>
@@ -53,9 +66,25 @@
 							<mainClass>com.agoda.image.gui.ImageDialog</mainClass>
 						</manifest>
 					</archive>
-                    <!--<classesDirectory>target/classes/com/intellij</classesDirectory>-->
 				</configuration>
 			</plugin>
+            <plugin>
+                <groupId>org.codehaus.mojo</groupId>
+                <artifactId>ideauidesigner-maven-plugin</artifactId>
+                <executions>
+                    <execution>
+                        <goals>
+                            <goal>javac2</goal>
+                        </goals>
+                    </execution>
+                </executions>
+
+                <configuration>
+                    <fork>true</fork>
+                    <debug>true</debug>
+                    <failOnError>true</failOnError>
+                </configuration>
+            </plugin>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-shade-plugin</artifactId>
@@ -72,6 +101,7 @@
                                     <include>agoda-image:agoda-imagecalculator</include>
                                     <include>org.apache.commons:commons-lang3</include>
                                     <include>org.apache.commons:commons-collections4</include>
+                                    <include>com.intellij:forms_rt</include>
                                 </includes>
                             </artifactSet>
                             <!--<filters>

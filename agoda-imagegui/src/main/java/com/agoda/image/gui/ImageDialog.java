@@ -1,8 +1,9 @@
 package com.agoda.image.gui;
 
-import com.agoda.image.calculator.downloader.BookingImageDownloader;
 import com.agoda.image.calculator.FileData;
 import com.agoda.image.calculator.ImageData;
+import com.agoda.image.calculator.constants.GlobalConstants;
+import com.agoda.image.calculator.downloader.BookingImageDownloader;
 import com.agoda.image.calculator.downloader.ImageDownloader;
 import com.agoda.image.calculator.exceptions.AgodaImageException;
 import com.agoda.image.calculator.manipulator.ImageManipulator;
@@ -11,6 +12,7 @@ import org.apache.commons.lang3.StringUtils;
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.*;
+import java.util.ArrayList;
 import java.util.List;
 
 public class ImageDialog extends JDialog {
@@ -117,18 +119,35 @@ public class ImageDialog extends JDialog {
 
         if (imageData != null && imageData.getFileDatas() != null) {
             try {
+                List<String> invalidImages = new ArrayList<String>();
                 imageDownloader.downloadImages(imageData, downloadDirectory);
                 for (FileData fileData : imageData.getFileDatas()) {
                     ImageManipulator manipulator = new ImageManipulator(fileData);
-                    manipulator.resize();
+                    try {
+                        manipulator.resize();
+                    } catch (AgodaImageException e) {
+                        invalidImages.add(fileData.getFile().getName());
+                    }
                 }
-                showInfo("All pictures have been downloaded and resized.\nCheck the files with name containing \"_resized\".");
+                showInfo("All pictures have been downloaded and resized." +
+                        "\nCheck the files within the folder '" + GlobalConstants.RESIZED_DIRECTORY_NAME + "'.\n\n" +
+                        getInvalidImagesForShow(invalidImages));
             } catch (AgodaImageException e) {
                 showError(e.getErrorCode().getMessage());
                 e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
             }
         }
+    }
 
+    private String getInvalidImagesForShow(List<String> invalidImages) {
+        StringBuilder builder = new StringBuilder("");
+        if (!invalidImages.isEmpty()) {
+            builder.append("Following pictures couldn't be resized:");
+            for (String image : invalidImages) {
+                builder.append("\n - ").append(image);
+            }
+        }
+        return builder.toString();
     }
 
     private void showError(String message) {

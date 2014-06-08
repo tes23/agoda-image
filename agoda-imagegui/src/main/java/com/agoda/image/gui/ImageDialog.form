@@ -37,7 +37,7 @@
                 </constraints>
                 <properties>
                   <enabled value="false"/>
-                  <text value="Resize"/>
+                  <text value="Download and Resize"/>
                 </properties>
               </component>
               <component id="5723f" class="javax.swing.JButton" binding="closeButton">

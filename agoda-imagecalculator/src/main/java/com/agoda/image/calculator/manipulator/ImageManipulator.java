@@ -4,6 +4,7 @@ import com.agoda.image.calculator.FileData;
 import com.agoda.image.calculator.constants.GlobalConstants;
 import com.agoda.image.calculator.exceptions.AgodaImageException;
 import com.agoda.image.calculator.exceptions.ErrorCode;
+import org.apache.commons.imaging.Imaging;
 import org.imgscalr.Scalr;
 
 import javax.imageio.ImageIO;
@@ -26,10 +27,12 @@ public class ImageManipulator {
 
     public void resize() throws AgodaImageException {
         try {
-            BufferedImage image = ImageIO.read(fileData.getFile());
+
+//            BufferedImage image = ImageIO.read(fileData.getFile()); //ImageIO can't read CMYK-encoded images
+              BufferedImage image = Imaging.getBufferedImage(fileData.getFile());
 //            int type = image.getType() == 0 ? BufferedImage.TYPE_INT_ARGB : image.getType();
             resizeImage(image);
-        } catch (IOException e) {
+        } catch (Exception e) {
             throw new AgodaImageException(ErrorCode.IO_PROBLEM, e);
         }
 

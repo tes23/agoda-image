@@ -15,7 +15,7 @@
     <version>1.0-SNAPSHOT</version>
 
     <properties>
-        <!--<imgscalr.path>c:\\Projects\\agoda-image\\lib\\imgscalr-lib-4.2.jar</imgscalr.path>-->
+        <!--<imgscalr.path>/Projects/agoda-image/lib/imgscalr-lib-4.2.jar</imgscalr.path>-->
     </properties>
 
     <dependencies>
@@ -31,6 +31,18 @@
             <version>1.7.5</version>
         </dependency>
 
+        <!--<dependency>
+            <groupId>org.apache.sanselan</groupId>
+            <artifactId>sanselan</artifactId>
+            <version>0.97-incubator</version>
+        </dependency>-->
+
+        <dependency>
+            <groupId>org.apache.commons</groupId>
+            <artifactId>commons-imaging</artifactId>
+            <version>1.0-SNAPSHOT</version>
+        </dependency>
+
         <dependency>
             <!-- jsoup HTML parser library @ http://jsoup.org/ -->
             <groupId>org.jsoup</groupId>
@@ -38,26 +50,19 @@
             <version>1.7.3</version>
         </dependency>
 
-        <!--<dependency>
-            <groupId>org.imgscalr</groupId>
-            <artifactId>imgscalr-lib</artifactId>
-            <version>4.2</version>
-            <type>jar</type>
-            <scope>system</scope>
-            <systemPath>${basedir}/../lib/imgscalr-lib-4.2.jar</systemPath>
-        </dependency>-->
         <dependency>
             <groupId>org.imgscalr</groupId>
             <artifactId>imgscalr-lib</artifactId>
             <version>4.2</version>
             <type>jar</type>
-            <scope>compile</scope>
         </dependency>
 
+        <!-- TESTS -->
         <dependency>
             <groupId>junit</groupId>
             <artifactId>junit</artifactId>
             <version>4.8.1</version>
+            <scope>test</scope>
         </dependency>
     </dependencies>
 
@@ -78,6 +83,7 @@
                                 <includes>
                                     <include>org.jsoup:jsoup</include>
                                     <include>org.imgscalr:imgscalr-lib</include>
+                                    <include>org.apache.commons:commons-imaging</include>
                                 </includes>
                             </artifactSet>
                         </configuration>
@@ -86,11 +92,15 @@
             </plugin>
         </plugins>
     </build>
-    <!--<repositories>
+
+    <repositories>
         <repository>
-            <id>centra</id>
-            <url>http://repo1.maven.org/maven2/</url>
+            <id>apache.snapshots</id>
+            <url>http://repository.apache.org/snapshots/</url>
+            <snapshots>
+                <enabled>true</enabled>
+            </snapshots>
         </repository>
-    </repositories>-->
+    </repositories>
 
 </project>
